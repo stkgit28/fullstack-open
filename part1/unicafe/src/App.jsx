@@ -1,61 +1,58 @@
-const Header = (props) => {
-  return <h1>{props.course}</h1>
+import { useState } from 'react'
+
+const Buton = (props) => {
+  return (
+    <button onClick = {props.onClick}>{props.text}</button>
+  );
 }
 
-const Part = (props) =>{
-  return (
-    <div>
-      <p>{props.name} {props.exercises}</p>
-
-    </div>
-  )
-
+const StatistcLine = (props) =>{
+  return(
+    <p>{props.text} {props.value}{props.unit}</p>
+  );
 }
 
-const Content = (props) => {
+const Statistics = (props) => {
+  if (props.total === 0) {
+    return (
+      <p>No feedback given</p>
+    )
+  }
   return (
-    <div>
-      <Part name={props.part1} exercises={props.exercises1} />
-      <Part name={props.part2} exercises={props.exercises2} />
-      <Part name={props.part3} exercises={props.exercises3} />
-    </div>
-  )
-}
-
-const Total = (props) => {
-  return (
-    <p>
-      Number of exercises {
-        props.exercises1 + props.exercises2 + props.exercises3
-      }
-    </p>
+    <table>
+  <tbody>
+      <tr><td><StatistcLine text="good" value={props.good} /></td></tr>
+      <tr><td><StatistcLine text="neutral" value={props.neutral} /></td></tr>
+      <tr><td><StatistcLine text="bad" value={props.bad} /></td></tr>
+      <tr><td><StatistcLine text="average" value={props.average} /></td></tr>
+      <tr><td><StatistcLine text="positive" value={props.positive} unit="%" /></td></tr>
+  </tbody>
+</table>
   )
 }
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
 
   return (
     <div>
-      <Header course={course} />
-      <Content
-       part1 = {part1}
-       exercises1 = {exercises1}
-       part2 = {part2}
-       exercises2 = {exercises2}
-       part3 = {part3}
-       exercises3 = {exercises3}       
-      />
-      <Total
-        exercises1={exercises1}
-        exercises2={exercises2}
-        exercises3={exercises3}
+      <h1>give feedback</h1>
+      <Buton onClick = {() => setGood(good + 1)} text="good" />
+      <Buton onClick = {() => setNeutral(neutral + 1)} text = "neutral"/>
+      <Buton onClick = {() => setBad(bad + 1)} text = "bad"/>
+      <h1>statistics</h1>
+      <Statistics 
+        good={good} 
+        neutral={neutral} 
+        bad={bad} 
+        average={average} 
+        positive={positive} 
+        total={total} 
       />
     </div>
   )
